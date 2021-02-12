@@ -1,4 +1,3 @@
-
 from io import TextIOWrapper
 
 
@@ -179,18 +178,17 @@ def _extract_data(rinex_file: TextIOWrapper) -> dict:
             str_data = []
 
             for _ in range(8):
-                str_data.append(_next_line(rinex_file))                
-
+                str_data.append(_next_line(rinex_file))
             
             ex_data_l1 = _read_PRN_EPOCH_SV_CLK(str_data[0])
             
             ext_data[str(ex_data_l1['PRN'])] = ex_data_l1
             ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_1(str_data[1]))
-            ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_2(str_data[2]))            
-            ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_3(str_data[3]))            
-            ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_4(str_data[4]))            
+            ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_2(str_data[2]))
+            ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_3(str_data[3]))
+            ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_4(str_data[4]))
             ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_5(str_data[5]))
-            ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_6(str_data[6]))            
+            ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_6(str_data[6]))
             ext_data[str(ex_data_l1['PRN'])].update(_read_BROADCAST_ORBIT_7(str_data[7]))
 
         except EndOfFile:
@@ -198,7 +196,7 @@ def _extract_data(rinex_file: TextIOWrapper) -> dict:
             break
         except ErrorOBSRecord as eobsr:
             print('Error OBS Record', eobsr)
-            #skip records of the satellite
+            #TO DO: skip records of the satellite
     return ext_data
 
 

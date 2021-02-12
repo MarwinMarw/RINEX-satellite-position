@@ -1,4 +1,3 @@
-
 import math
 import parse_rinex
 
@@ -24,7 +23,7 @@ def _calculate_Ek(Mk, e):
 
     return Ek
 
-def calculate_satpos(sat_rinex: dict):
+def calculate_satpos(sat_rinex: dict) -> tuple:
     A = sat_rinex['sqrt_A']**2
     n_0 = math.sqrt(GM/ (A**3))
     n = n_0 + sat_rinex['Delta_n']
@@ -73,7 +72,5 @@ def calculate_positions(sat_data: dict) -> dict:
 
 if __name__ == '__main__':
     sat_data = parse_rinex.read_rinex('./test/940779338I_1.17N')
-    print(len(sat_data))
-    for key, rinex_info in sat_data.items():
-        pos = calculate_satpos(rinex_info)
-        print(key, pos)
+    sat_pos = calculate_positions(sat_data)
+    print(sat_pos)
