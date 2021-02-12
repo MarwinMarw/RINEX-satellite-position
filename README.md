@@ -1,5 +1,5 @@
 # RINEX-SATELLITE-POSITION
-The Models are created to parsing the [***RINEX format V2***](https://www.ngs.noaa.gov/CORS/RINEX211.txt) files  and calculating positions of satellites which data are described in the RINEX files.
+The modules are created to parsing the [***RINEX format V2***](https://www.ngs.noaa.gov/CORS/RINEX211.txt) files  and calculating positions of satellites which data are described in the RINEX files.
 
 Positions presented in [ECEF](https://en.wikipedia.org/wiki/ECEF) coordinate system.
 
@@ -44,3 +44,4 @@ sat_positions = satpos.calculate_positions(sat_data)
  ```
 
  Where key of the dictionary is a PRN of a satellite.
+ 
