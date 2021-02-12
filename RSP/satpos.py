@@ -56,10 +56,10 @@ def calculate_satpos(sat_rinex: dict) -> tuple:
 def calculate_positions(sat_data: dict) -> dict:
     sat_pos = {}
 
-    for _, sat_rinex in sat_data.items():
+    for key, sat_rinex in sat_data.items():
         xk, yk, zk = calculate_satpos(sat_rinex)
 
-        sat_pos[str(sat_rinex['PRN'])] = {
+        sat_pos[key] = {
             'x': xk,
             'y': yk,
             'z': zk
