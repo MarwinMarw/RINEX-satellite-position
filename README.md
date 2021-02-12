@@ -50,3 +50,4 @@ sat_pos = calculate_positions(sat_data)
 
  Where key of the dictionary is a PRN of a satellite.
  
+ The RINEX nav data, I took from the [UNAVCO ftp resource](ftp://data-out.unavco.org/pub/rinex/nav/)
