@@ -5,12 +5,13 @@ Positions presented in [ECEF](https://en.wikipedia.org/wiki/ECEF) coordinate sys
 
 ## How to use (example)
 ```python 
-import parse_rinex
-import satpos
+from RSP.parse_rinex import read_rinex
+from RSP.satpos import calculate_satpos
 
-sat_data = parse_rinex.read_rinex('filename')
+
+sat_data = read_rinex(filename)
 for key, rinex_info in sat_data.items():
-    pos = satpos.calculate_satpos(rinex_info)
+    pos = calculate_satpos(rinex_info)
 ```
 
 As result of the ***read_rinex*** function you can see a dictionary with processed data of the file specified as argument of the function.
@@ -21,7 +22,7 @@ Below you can see one of the records:
 
 ```
 
-After this, need to process the received data to get satellites positions described in the ***RINEX file***. For this task we can use ***satpos.calculate_satpos*** function.
+After this, need to process the received data to get satellites positions described in the ***RINEX file***. For this task we can use ***calculate_satpos*** function.
 
 The function return tuple with a position of the satellite (x, y, z)
 
@@ -30,11 +31,15 @@ Return example:
  (-3666055.9598023687, -14502006.7903851, 21551445.60757155)
  ```
 
- Or we can use the ***satpos.calculate_positions*** function to process all records which we can get from the ***parse_rinex.read_rinex*** function.
+ Or we can use the ***calculate_positions*** function to process all records which we can get from the ***read_rinex*** function.
 
 ```python
-sat_data = parse_rinex.read_rinex('filename')
-sat_positions = satpos.calculate_positions(sat_data)
+from RSP.parse_rinex import read_rinex
+from RSP.satpos import calculate_positions
+
+
+sat_data = read_rinex(filename)
+sat_pos = calculate_positions(sat_data)
  ```
  Examplethe output of the code is:
 

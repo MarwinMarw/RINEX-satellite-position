@@ -1,6 +1,4 @@
 import math
-import parse_rinex
-
 
 GM = 3.986005 * 10**14
 OMEGA_e = 7.292115 * 10**(-5)
@@ -70,7 +68,3 @@ def calculate_positions(sat_data: dict) -> dict:
     return sat_pos
 
 
-if __name__ == '__main__':
-    sat_data = parse_rinex.read_rinex('./test/940779338I_1.17N')
-    sat_pos = calculate_positions(sat_data)
-    print(sat_pos)
