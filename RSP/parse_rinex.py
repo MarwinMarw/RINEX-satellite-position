@@ -171,29 +171,26 @@ def _next_line(rinex_file: TextIOWrapper) -> list:
     return fixed_nums
 
 
-def _extract_data(rinex_file: TextIOWrapper) -> dict:    
-    ext_data = {}
-    nr_sat = 0
+def _extract_data(rinex_file: TextIOWrapper) -> list:    
+    all_data = list()
     while True:
         try:
-            str_data = []
+            str_data = list()
+            ext_data = dict()
 
             for _ in range(8):
                 str_data.append(_next_line(rinex_file))
-            
-            
 
-            ex_data_l1 = _read_PRN_EPOCH_SV_CLK(str_data[0])
-            key = f"{nr_sat}_{str(ex_data_l1['PRN'])}"
-            nr_sat += 1
-            ext_data[key] = ex_data_l1
-            ext_data[key].update(_read_BROADCAST_ORBIT_1(str_data[1]))
-            ext_data[key].update(_read_BROADCAST_ORBIT_2(str_data[2]))
-            ext_data[key].update(_read_BROADCAST_ORBIT_3(str_data[3]))
-            ext_data[key].update(_read_BROADCAST_ORBIT_4(str_data[4]))
-            ext_data[key].update(_read_BROADCAST_ORBIT_5(str_data[5]))
-            ext_data[key].update(_read_BROADCAST_ORBIT_6(str_data[6]))
-            ext_data[key].update(_read_BROADCAST_ORBIT_7(str_data[7]))
+            ext_data = _read_PRN_EPOCH_SV_CLK(str_data[0])
+            ext_data.update(_read_BROADCAST_ORBIT_1(str_data[1]))
+            ext_data.update(_read_BROADCAST_ORBIT_2(str_data[2]))
+            ext_data.update(_read_BROADCAST_ORBIT_3(str_data[3]))
+            ext_data.update(_read_BROADCAST_ORBIT_4(str_data[4]))
+            ext_data.update(_read_BROADCAST_ORBIT_5(str_data[5]))
+            ext_data.update(_read_BROADCAST_ORBIT_6(str_data[6]))
+            ext_data.update(_read_BROADCAST_ORBIT_7(str_data[7]))
+
+            all_data.append(ext_data)
 
         except EndOfFile:
             print("End of file")
@@ -201,7 +198,7 @@ def _extract_data(rinex_file: TextIOWrapper) -> dict:
         except ErrorOBSRecord as eobsr:
             print('Error OBS Record', eobsr)
             #TO DO: skip records of the satellite
-    return ext_data
+    return all_data
 
 
 def read_rinex(filename: str):
