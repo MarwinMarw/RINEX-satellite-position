@@ -223,14 +223,26 @@ def _extract_dgroup(rinex_file: TextIOWrapper) -> dict:
 
     return extracted_data
 
-def read_rinex_dgroup(filename: str):
+def read_rinex_dgroup(filename: str) -> dict:
+    ''' 
+    Reads RINEX file and return grouped data of satellites
+    and sorted records of a satellite by TTM.
+
+    Returns a dictionary, where the key is a PRN of a satellite
+    and value is a list of records of the satellite.
+    '''
+
     ext_data = None
     with open(filename, 'r') as rinex_file:
         _skip_header(rinex_file)
         ext_data = _extract_dgroup(rinex_file)
     return ext_data
 
-def read_rinex(filename: str):
+def read_rinex(filename: str) -> list:
+    '''
+    Reads RINEX file and return list of records in the order in
+    which they were written in the file.
+    '''
     ext_data = None
     with open(filename, 'r') as rinex_file:
         _skip_header(rinex_file)
