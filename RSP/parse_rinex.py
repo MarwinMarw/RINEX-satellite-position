@@ -1,6 +1,7 @@
 from io import TextIOWrapper
 
 
+
 class EndOfFile(Exception):
     pass
 
@@ -160,7 +161,7 @@ def _read_BROADCAST_ORBIT_7(nums: list) -> dict:
     }
 
 
-def _next_line(rinex_file: TextIOWrapper) -> list:
+def _read_line(rinex_file: TextIOWrapper) -> list:
     line = rinex_file.readline()
     if line == '':
         raise EndOfFile
@@ -171,26 +172,44 @@ def _next_line(rinex_file: TextIOWrapper) -> list:
     return fixed_nums
 
 
+def _extract_record(rinex_file: TextIOWrapper) -> dict:
+    ext_record = dict()
+    ext_record = _read_PRN_EPOCH_SV_CLK(_read_line(rinex_file))
+    ext_record.update(_read_BROADCAST_ORBIT_1(_read_line(rinex_file)))
+    ext_record.update(_read_BROADCAST_ORBIT_2(_read_line(rinex_file)))
+    ext_record.update(_read_BROADCAST_ORBIT_3(_read_line(rinex_file)))
+    ext_record.update(_read_BROADCAST_ORBIT_4(_read_line(rinex_file)))
+    ext_record.update(_read_BROADCAST_ORBIT_5(_read_line(rinex_file)))
+    ext_record.update(_read_BROADCAST_ORBIT_6(_read_line(rinex_file)))
+    ext_record.update(_read_BROADCAST_ORBIT_7(_read_line(rinex_file)))
+
+    return ext_record
+
 def _extract_data(rinex_file: TextIOWrapper) -> list:    
-    all_data = list()
+    extracted_data = list()
     while True:
         try:
-            str_data = list()
-            ext_data = dict()
+            ext_data = _extract_record(rinex_file)
 
-            for _ in range(8):
-                str_data.append(_next_line(rinex_file))
+            extracted_data.append(ext_data)
+        except EndOfFile:
+            print("End of file")
+            break
+        except ErrorOBSRecord as eobsr:
+            print('Error OBS Record', eobsr)
+            #TO DO: skip records of the satellite
 
-            ext_data = _read_PRN_EPOCH_SV_CLK(str_data[0])
-            ext_data.update(_read_BROADCAST_ORBIT_1(str_data[1]))
-            ext_data.update(_read_BROADCAST_ORBIT_2(str_data[2]))
-            ext_data.update(_read_BROADCAST_ORBIT_3(str_data[3]))
-            ext_data.update(_read_BROADCAST_ORBIT_4(str_data[4]))
-            ext_data.update(_read_BROADCAST_ORBIT_5(str_data[5]))
-            ext_data.update(_read_BROADCAST_ORBIT_6(str_data[6]))
-            ext_data.update(_read_BROADCAST_ORBIT_7(str_data[7]))
+    return extracted_data
 
-            all_data.append(ext_data)
+def _extract_dgroup(rinex_file: TextIOWrapper) -> dict:    
+    extracted_data = dict()
+    while True:
+        try:
+            ext_data = _extract_record(rinex_file)
+            if ext_data['PRN'] in extracted_data:
+                extracted_data[ext_data['PRN']].append(ext_data)
+            else:
+                extracted_data[ext_data['PRN']] = [ext_data]
 
         except EndOfFile:
             print("End of file")
@@ -198,8 +217,18 @@ def _extract_data(rinex_file: TextIOWrapper) -> list:
         except ErrorOBSRecord as eobsr:
             print('Error OBS Record', eobsr)
             #TO DO: skip records of the satellite
-    return all_data
+    for _, item in extracted_data.items():
+        sorter = lambda e: e['TTM']
+        item.sort(key=sorter)
 
+    return extracted_data
+
+def read_rinex_dgroup(filename: str):
+    ext_data = None
+    with open(filename, 'r') as rinex_file:
+        _skip_header(rinex_file)
+        ext_data = _extract_dgroup(rinex_file)
+    return ext_data
 
 def read_rinex(filename: str):
     ext_data = None
